@@ -1,43 +1,72 @@
-from flask import Flask, render_template, request, redirect, url_for
+from flask import Flask, g, render_template, request, redirect, url_for
 import sqlite3
 
 app = Flask(__name__)
 
-# ฟังก์ชันสำหรับเชื่อมต่อฐานข้อมูล
-def connect_db():
-    return sqlite3.connect('stock.db')
+DATABASE = 'stock.db'
 
-# แสดงรายการสินค้าทั้งหมด
+# ฟังก์ชันสำหรับเชื่อมต่อกับฐานข้อมูล
+def get_db():
+    db = getattr(g, '_database', None)
+    if db is None:
+        db = g._database = sqlite3.connect(DATABASE)
+    return db
+
+# ฟังก์ชันปิดการเชื่อมต่อ
+@app.teardown_appcontext
+def close_connection(exception):
+    db = getattr(g, '_database', None)
+    if db is not None:
+        db.close()
+
+# หน้าหลักแสดงรายการสินค้า
 @app.route('/')
 def index():
-    conn = connect_db()
-    cur = conn.cursor()
-    cur.execute('SELECT * FROM products')
-    products = cur.fetchall()
-    conn.close()
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('SELECT * FROM products')
+    products = cursor.fetchall()
     return render_template('index.html', products=products)
 
-# เพิ่มสินค้าใหม่
+# ฟังก์ชันเพิ่มสินค้าใหม่
 @app.route('/add', methods=['POST'])
 def add_product():
     name = request.form['name']
     quantity = request.form['quantity']
     price = request.form['price']
-    conn = connect_db()
-    cur = conn.cursor()
-    cur.execute('INSERT INTO products (name, quantity, price) VALUES (?, ?, ?)', (name, quantity, price))
+
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('INSERT INTO products (name, quantity, price) VALUES (?, ?, ?)', (name, quantity, price))
     conn.commit()
-    conn.close()
+
     return redirect(url_for('index'))
+
+# ฟังก์ชันแก้ไขสินค้า
+@app.route('/edit/<int:id>', methods=['GET', 'POST'])
+def edit_product(id):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    if request.method == 'POST':
+        name = request.form['name']
+        quantity = request.form['quantity']
+        price = request.form['price']
+        cursor.execute('UPDATE products SET name = ?, quantity = ?, price = ? WHERE id = ?', (name, quantity, price, id))
+        conn.commit()
+        return redirect(url_for('index'))
+
+    cursor.execute('SELECT * FROM products WHERE id = ?', (id,))
+    product = cursor.fetchone()
+    return render_template('edit.html', product=product)
 
 # ฟังก์ชันลบสินค้า
 @app.route('/delete/<int:id>')
 def delete_product(id):
-    conn = connect_db()
-    cur = conn.cursor()
-    cur.execute('DELETE FROM products WHERE id = ?', (id,))
+    conn = get_db()
+    cursor = conn.cursor()
+    cursor.execute('DELETE FROM products WHERE id = ?', (id,))
     conn.commit()
-    conn.close()
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
