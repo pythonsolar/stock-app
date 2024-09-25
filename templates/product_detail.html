@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Product Details</title>
+</head>
+<body>
+    <h1>Edit Product: {{ product[1] }}</h1>
+
+    <!-- ฟอร์มสำหรับอัปโหลดรูปภาพและรายละเอียดสินค้า -->
+    <form action="/product/{{ product[0] }}" method="POST" enctype="multipart/form-data">
+        <label for="detail">Product Detail:</label>
+        <textarea id="detail" name="detail" rows="4" cols="50">{{ product[6] }}</textarea>
+
+        <label for="image">Product Image:</label>
+        <input type="file" id="image" name="image" accept="image/*">
+
+        <button type="submit">Update</button>
+    </form>
+
+    <a href="/">Back to Product List</a>
+
+    <!-- แสดงรูปภาพที่อัปโหลดแล้ว (ถ้ามี) -->
+    {% if product[5] %}
+    <h2>Current Image:</h2>
+    <img src="{{ url_for('static', filename='uploads/' + product[5]) }}" alt="{{ product[1] }}" width="200">
+    {% endif %}
+</body>
+</html>
