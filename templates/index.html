@@ -1,21 +1,21 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
-    <title>Stock Check</title>
-</head>
-<body>
-    <h1>Stock List</h1>
-    <table>
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="container">
+    <div class="d-flex justify-content-between align-items-center mb-3">
+        <h1>Product List</h1>
+        <a href="{{ url_for('add_product_page') }}" class="btn btn-success">Add New Product</a> <!-- ปุ่ม Add Product -->
+    </div>
+    
+    <table class="table">
         <thead>
             <tr>
                 <th>ID</th>
                 <th>Product Name</th>
                 <th>Quantity</th>
                 <th>Price</th>
-                <th>Category</th>  <!-- เพิ่มหัวตารางสำหรับหมวดหมู่ -->
+                <th>Category</th>
                 <th>Action</th>
             </tr>
         </thead>
@@ -23,41 +23,97 @@
             {% for product in products %}
             <tr>
                 <td>{{ product[0] }}</td>
-                <td><a href="/product/{{ product[0] }}">{{ product[1] }}</a></td>  <!-- ลิงก์ไปยังหน้าเพิ่มรูปภาพและรายละเอียด -->
+                <td><a href="/product/{{ product[0] }}" class="product-link">{{ product[1] }}</a></td>
                 <td>{{ product[2] }}</td>
-                <td>{{ product[3] }}</td>
-                <td>{{ product[4] }}</td> 
+                <td>{{ "%.2f"|format(product[3]) }}</td>
+                <td>{{ product[4] }}</td>
                 <td>
-                    <a href="/edit/{{ product[0] }}">Edit</a>
-                    <a href="/delete/{{ product[0] }}" onclick="return confirmDelete();">Delete</a>
+                    <a href="/edit/{{ product[0] }}" class="btn btn-primary btn-sm">Edit</a>
+                    <a href="/delete/{{ product[0] }}" class="btn btn-danger btn-sm" onclick="return confirmDelete();">Delete</a>
                 </td>
-                
             </tr>
             {% endfor %}
         </tbody>
     </table>
+</div>
 
-    <h2>Add New Product</h2>
-    <form action="/add" method="post">
-        <label for="name">Product Name:</label>
-        <input type="text" id="name" name="name" required>
+<!-- CSS -->
+<style>
+    .container {
+        margin-top: 20px;
+        max-width: 800px;
+    }
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .table th, .table td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+    .table th {
+        background-color: #f2f2f2;
+        font-weight: bold;
+    }
+    .product-link {
+        color: #007bff;
+        text-decoration: none;
+    }
+    .product-link:hover {
+        text-decoration: underline;
+    }
+    .form-group {
+        margin-top: 20px;
+    }
+    .form-control {
+        margin-bottom: 10px;
+        padding: 10px;
+        width: 100%;
+        box-sizing: border-box;
+    }
+    .btn {
+        padding: 5px 10px;
+        text-align: center;
+        cursor: pointer;
+    }
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 5px;
+    }
+    .btn-danger {
+        background-color: #dc3545;
+        color: white;
+        border: none;
+        border-radius: 5px;
+    }
+    .btn-sm {
+        font-size: 12px;
+        padding: 5px 8px;
+    }
+    .btn-success {
+        background-color: #28a745;
+        color: white;
+        border: none;
+        border-radius: 5px;
+    }
+    .mt-3 {
+        margin-top: 15px;
+    }
+    .d-flex {
+        display: flex;
+    }
+    .justify-content-between {
+        justify-content: space-between;
+    }
+    .align-items-center {
+        align-items: center;
+    }
+    .mb-3 {
+        margin-bottom: 1rem;
+    }
+</style>
 
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" name="quantity" required>
-
-        <label for="price">Price:</label>
-        <input type="number" id="price" name="price" step="0.01" required>
-
-        <label for="category">Category:</label>
-        <input type="text" id="category" name="category" required>  <!-- เพิ่มฟิลด์หมวดหมู่ -->
-
-        <button type="submit">Add Product</button>
-    </form>
-
-    <script>
-        function confirmDelete() {
-            return confirm("Are you sure you want to delete this product?");
-        }
-    </script>
-</body>
-</html>
+{% endblock content %}

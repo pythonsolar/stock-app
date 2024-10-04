@@ -66,13 +66,18 @@ def index():
     products = cursor.fetchall()
     return render_template('index.html', products=products)
 
+# แสดงหน้าเพิ่มสินค้าใหม่
+@app.route('/add_product_page', methods=['GET'])
+def add_product_page():
+    return render_template('add_product.html')  # ใช้เทมเพลต add_product.html
+
 # ฟังก์ชันเพิ่มสินค้าใหม่
 @app.route('/add', methods=['POST'])
 def add_product():
     name = request.form['name']
     quantity = request.form['quantity']
     price = request.form['price']
-    category = request.form['category']  # รับค่าหมวดหมู่จากฟอร์ม
+    category = request.form['category']
 
     conn = get_db()
     cursor = conn.cursor()
@@ -80,7 +85,6 @@ def add_product():
     conn.commit()
 
     return redirect(url_for('index'))
-
 
 # ฟังก์ชันแก้ไขสินค้า
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
@@ -92,7 +96,7 @@ def edit_product(id):
         name = request.form['name']
         quantity = request.form['quantity']
         price = request.form['price']
-        category = request.form['category']  # รับค่าหมวดหมู่จากฟอร์ม
+        category = request.form['category']
 
         cursor.execute('UPDATE products SET name = ?, quantity = ?, price = ?, category = ? WHERE id = ?', (name, quantity, price, category, id))
         conn.commit()
