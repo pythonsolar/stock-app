@@ -1,5 +1,7 @@
 from flask import Flask, g, render_template, request, redirect, url_for
 import sqlite3
+import os
+from werkzeug.utils import secure_filename
 
 app = Flask(__name__)
 
@@ -19,6 +21,42 @@ def close_connection(exception):
     if db is not None:
         db.close()
 
+# ตั้งค่าที่เก็บไฟล์รูปภาพ
+UPLOAD_FOLDER = 'static/uploads'
+app.config['UPLOAD_FOLDER'] = UPLOAD_FOLDER
+ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+# ตรวจสอบไฟล์อัปโหลดเป็นชนิดที่อนุญาต
+def allowed_file(filename):
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+# เส้นทางสำหรับแสดงหน้าเพิ่มรูปภาพและรายละเอียดสินค้า
+@app.route('/product/<int:id>', methods=['GET', 'POST'])
+def product_details(id):
+    conn = get_db()
+    cursor = conn.cursor()
+
+    # ถ้า POST แปลว่าผู้ใช้ส่งฟอร์มมาแล้ว
+    if request.method == 'POST':
+        detail = request.form['detail']
+        file = request.files['image']
+
+        if file and allowed_file(file.filename):
+            filename = secure_filename(file.filename)
+            file.save(os.path.join(app.config['UPLOAD_FOLDER'], filename))
+
+            # อัปเดตฐานข้อมูล
+            cursor.execute('UPDATE products SET detail = ?, image = ? WHERE id = ?', (detail, filename, id))
+            conn.commit()
+
+        return redirect(url_for('index'))
+
+    # ดึงข้อมูลสินค้ามาแสดง
+    cursor.execute('SELECT * FROM products WHERE id = ?', (id,))
+    product = cursor.fetchone()
+
+    return render_template('product_detail.html', product=product)
+
 # หน้าหลักแสดงรายการสินค้า
 @app.route('/')
 def index():
@@ -34,13 +72,15 @@ def add_product():
     name = request.form['name']
     quantity = request.form['quantity']
     price = request.form['price']
+    category = request.form['category']  # รับค่าหมวดหมู่จากฟอร์ม
 
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO products (name, quantity, price) VALUES (?, ?, ?)', (name, quantity, price))
+    cursor.execute('INSERT INTO products (name, quantity, price, category) VALUES (?, ?, ?, ?)', (name, quantity, price, category))
     conn.commit()
 
     return redirect(url_for('index'))
+
 
 # ฟังก์ชันแก้ไขสินค้า
 @app.route('/edit/<int:id>', methods=['GET', 'POST'])
@@ -52,7 +92,9 @@ def edit_product(id):
         name = request.form['name']
         quantity = request.form['quantity']
         price = request.form['price']
-        cursor.execute('UPDATE products SET name = ?, quantity = ?, price = ? WHERE id = ?', (name, quantity, price, id))
+        category = request.form['category']  # รับค่าหมวดหมู่จากฟอร์ม
+
+        cursor.execute('UPDATE products SET name = ?, quantity = ?, price = ?, category = ? WHERE id = ?', (name, quantity, price, category, id))
         conn.commit()
         return redirect(url_for('index'))
 
@@ -70,4 +112,4 @@ def delete_product(id):
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(debug=True, port=5001)
