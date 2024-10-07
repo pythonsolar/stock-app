@@ -2,34 +2,43 @@
 
 {% block content %}
 <div class="container mt-5">
-    <h1 class="mb-4">Edit Product: {{ product[1] }}</h1>
+    <h1 class="mb-4 text-center">รายละเอียดสินค้า:</h1>
+    <h1 class="mb-4 text-center">{{ product.name }}</h1>
+
+    <!-- แสดงรูปภาพที่อัปโหลดแล้ว (ถ้ามี) -->
+    <div class="text-center mb-4">
+        {% if product.image %}
+            <!-- <h2 class="mt-4">ภาพสินค้า:</h2> -->
+            <img src="{{ url_for('static', filename='uploads/' + product.image) }}" alt="{{ product.name }}" class="img-thumbnail mt-2" style="width: 300px; height: auto;">
+        {% else %}
+            <p class="text-muted">ยังไม่มีรูปภาพ</p>
+        {% endif %}
+    </div>
 
     <!-- ฟอร์มสำหรับอัปโหลดรูปภาพและรายละเอียดสินค้า -->
-    <form action="/product/{{ product[0] }}" method="POST" enctype="multipart/form-data" class="form-group">
+    <form action="/product/{{ product.id }}" method="POST" enctype="multipart/form-data" class="form-group">
+        
         <!-- Product Detail -->
         <div class="mb-3">
-            <label for="detail" class="form-label">Product Detail:</label>
-            <textarea id="detail" name="detail" class="form-control" rows="6" cols="50" placeholder="Enter product details">{{ product[6] }}</textarea>
-            <small class="form-text text-muted">Provide a detailed description of the product.</small>
+            <label for="detail" class="form-label">รายละเอียด:</label>
+            <textarea id="detail" name="detail" class="form-control" rows="6" placeholder="Enter product details">{{ product.detail }}</textarea>
+            <!-- <small class="form-text text-muted">Please provide a detailed description of the product.</small> -->
         </div>
 
         <!-- Product Image -->
         <div class="mb-3">
-            <label for="image" class="form-label">Product Image:</label>
+            <label for="image" class="form-label">ภาพสินค้า:</label>
             <input type="file" id="image" name="image" class="form-control" accept="image/*">
-            <small class="form-text text-muted">Upload a new product image (optional).</small>
+            <!-- <small class="form-text text-muted">You can upload a new product image (optional).</small> -->
         </div>
 
         <!-- Submit Button -->
-        <button type="submit" class="btn btn-primary mt-3">Update Product</button>
-        <a href="/" class="btn btn-secondary mt-3">Back to Product List</a>
+        <div class="text-center mt-4">
+            <button type="submit" class="btn btn-primary me-3">อัพเดท</button>
+            <a href="/" class="btn btn-secondary">กลับหน้าหลัก</a>
+        </div>
     </form>
 
-    <!-- แสดงรูปภาพที่อัปโหลดแล้ว (ถ้ามี) -->
-    {% if product[5] %}
-    <h2 class="mt-5">Current Image:</h2>
-    <img src="{{ url_for('static', filename='uploads/' + product[5]) }}" alt="{{ product[1] }}" width="200" class="img-thumbnail mt-2">
-    {% endif %}
 </div>
 
 <!-- CSS -->
@@ -64,6 +73,9 @@
     .img-thumbnail {
         border-radius: 5px;
     }
+    .text-center {
+        text-align: center;
+    }
     .mt-5 {
         margin-top: 50px;
     }
@@ -75,6 +87,9 @@
     }
     .mb-4 {
         margin-bottom: 30px;
+    }
+    .me-3 {
+        margin-right: 15px;
     }
 </style>
 

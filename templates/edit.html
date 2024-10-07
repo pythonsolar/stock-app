@@ -2,32 +2,32 @@
 
 {% block content %}
 
-<div class="container">
-    <h1>Edit Product</h1>
-    <form action="/edit/{{ product[0] }}" method="POST">
-        <label for="name">Product Name:</label>
-        <input type="text" id="name" name="name" class="form-control" value="{{ product[1] }}" required>
+<div class="container mt-5">
+    <h1 class="mb-4 text-center">แก้ไขสินค้า:</h1>
+    <form action="/edit/{{ product.id }}" method="POST">
+        <label for="name">ชื่อสินค้า:</label>
+        <input type="text" id="name" name="name" class="form-control" value="{{ product.name }}" required>
 
-        <label for="quantity">Quantity:</label>
-        <input type="number" id="quantity" name="quantity" class="form-control" value="{{ product[2] }}" required>
+        <label for="quantity">จำนวน:</label>
+        <input type="number" id="quantity" name="quantity" class="form-control" value="{{ product.quantity }}" required>
 
-        <label for="price">Price:</label>
-        <input type="number" id="price" name="price" class="form-control" step="0.01" value="{{ product[3] }}" required>
+        <label for="price">ราคา:</label>
+        <input type="number" id="price" name="price" class="form-control" step="0.01" value="{{ product.price }}" required>
 
-        <label for="category">Category:</label>
+        <label for="category">หมวดหมู่สินค้า:</label>
         <select id="category" name="category" class="form-control" required>
-            <option value="ปั๊ม" {% if product[4] == 'ปั๊ม' %}selected{% endif %}>ปั๊ม</option>
-            <option value="แผงโซล่าเซลล์" {% if product[4] == 'แผงโซล่าเซลล์' %}selected{% endif %}>แผงโซล่าเซลล์</option>
-            <option value="อินเวอร์เตอร์" {% if product[4] == 'อินเวอร์เตอร์' %}selected{% endif %}>อินเวอร์เตอร์</option>
-            <option value="แบตเตอรี่" {% if product[4] == 'แบตเตอรี่' %}selected{% endif %}>แบตเตอรี่</option>
-            <option value="ชาร์จเจอร์" {% if product[4] == 'ชาร์จเจอร์' %}selected{% endif %}>ชาร์จเจอร์</option>
-            <option value="อุปกรณ์อื่นๆ" {% if product[4] == 'อุปกรณ์อื่นๆ' %}selected{% endif %}>อุปกรณ์อื่นๆ</option>
+            <option value="ปั๊ม" {% if product.category == 'ปั๊ม' %}selected{% endif %}>ปั๊ม</option>
+            <option value="แผงโซล่าเซลล์" {% if product.category == 'แผงโซล่าเซลล์' %}selected{% endif %}>แผงโซล่าเซลล์</option>
+            <option value="อินเวอร์เตอร์" {% if product.category == 'อินเวอร์เตอร์' %}selected{% endif %}>อินเวอร์เตอร์</option>
+            <option value="แบตเตอรี่" {% if product.category == 'แบตเตอรี่' %}selected{% endif %}>แบตเตอรี่</option>
+            <option value="ชาร์จเจอร์" {% if product.category == 'ชาร์จเจอร์' %}selected{% endif %}>ชาร์จเจอร์</option>
+            <option value="อุปกรณ์อื่นๆ" {% if product.category == 'อุปกรณ์อื่นๆ' %}selected{% endif %}>อุปกรณ์อื่นๆ</option>
         </select> <!-- เปลี่ยนเป็น dropdown และตั้งค่าให้เลือกหมวดหมู่เดิม -->
 
-        <button type="submit" class="btn btn-primary mt-3">Update Product</button>
+        <button type="submit" class="btn btn-primary mt-3">อัพเดท</button>
     </form>
 
-    <a href="/" class="btn btn-secondary mt-3">Cancel</a>
+    <a href="/" class="btn btn-secondary mt-3">ยกเลิก</a>
 </div>
 
 <!-- CSS -->
