@@ -17,3 +17,22 @@ th, td {
     text-align: left;
 }
 
+/* ทำให้ตารางเลื่อนในแนวนอนได้ในอุปกรณ์มือถือ */
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch; /* สำหรับ smooth scroll บนอุปกรณ์ iOS */
+  }
+  
+  /* ปรับฟอนต์และการแสดงผลเมื่ออยู่ในหน้าจอขนาดเล็ก */
+  @media (max-width: 768px) {
+    .table th, .table td {
+      font-size: 12px; /* ลดขนาดฟอนต์ในหน้าจอเล็ก */
+    }
+    
+    /* จัดให้ปุ่มแสดงเป็น block เพื่อให้มีพื้นที่มากขึ้น */
+    .btn {
+      width: 100%;
+      margin-bottom: 10px;
+    }
+  }
+  
