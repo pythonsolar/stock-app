@@ -35,7 +35,7 @@
     <table class="table">
         <thead>
             <tr>
-                <th class="text-center">รหัสสินค้า</th> <!-- เปลี่ยนเป็น Product Code -->
+                <th class="text-center">ID</th> <!-- เปลี่ยนเป็น Product Code -->
                 <th class="text-center">ชื่อสินค้า</th>
                 <th class="text-center">จำนวน</th>
                 <th class="text-center">ราคา</th>
@@ -46,7 +46,7 @@
         <tbody>
             {% for product in products %}
             <tr>
-                <td class="text-center">{{ product.product_code }}</td> <!-- เปลี่ยนจาก id เป็น product_code -->
+                <td class="text-center">{{ product.id}}</td> <!-- เปลี่ยนจาก id เป็น product_code -->
                 <td><a href="/product/{{ product.id }}" class="product-link">{{ product.name }}</a></td>
                 <td>{{ "{:,.0f}".format(product.quantity) }}</td>
                 <td>{{ "{:,.2f}".format(product.price) }}</td>

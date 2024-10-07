@@ -142,7 +142,7 @@ def add_product():
     today = datetime.today().strftime('%Y%m%d')  # ปี, เดือน, วัน
     random_number = str(random.randint(10, 99))  # สุ่มเลข 2 หลัก
     product_code = f"kc{today}{random_number}"  # รวมกันเป็น kcYYYYMMDDxx
-
+    
     conn = get_db()
     cursor = conn.cursor()
     cursor.execute('INSERT INTO products (name, quantity, price, category, product_code) VALUES (?, ?, ?, ?, ?)',
