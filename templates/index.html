@@ -4,18 +4,21 @@
 
 <div class="container mt-4">
     <!-- หัวข้อ Product List -->
-    <h1 class="mb-4">รายการสินค้า</h1>
+    <div class="d-flex justify-content-between align-items-center mb-1">
+        <h1 class="mb-4">รายการสินค้า</h1>
+        <a href="{{ url_for('add_product_page') }}" class="btn btn-success" style="width: 100px;">เพิ่มสินค้า</a>
+    </div>
 
     <!-- ฟอร์มค้นหา (Search และ Dropdown สำหรับ Category) -->
     <div class="d-flex justify-content-between align-items-center mb-3">
         <!-- ฟอร์มค้นหา -->
-        <form method="GET" action="/" class="d-flex" style="flex-grow: 1; margin-right: 10px;">
+        <form method="GET" action="/" class="d-flex" style="flex-grow: 1; margin-right: 1px;">
             <input class="form-control me-2" type="search" name="search" placeholder="ค้นหาจากชื่อสินค้า..." aria-label="Search" value="{{ request.args.get('search','') }}">
 
             <!-- Dropdown สำหรับเลือก Category -->
             <select name="category" class="form-select me-2">
-                <option value="">หมวดหมู่สินค้า</option>  <!-- แสดงสินค้าทุกประเภท -->
-                <option value="ปั๊ม" {% if request.args.get('category') == 'ปั๊ม' %}selected{% endif %}>ปั๊ม</option>
+                <option value="">หมวดสินค้า</option>  <!-- แสดงสินค้าทุกประเภท -->
+                <option value="ปั๊มน้ำ" {% if request.args.get('category') == 'ปั๊มน้ำ' %}selected{% endif %}>ปั๊มน้ำ</option>
                 <option value="แผงโซล่าเซลล์" {% if request.args.get('category') == 'แผงโซล่าเซลล์' %}selected{% endif %}>แผงโซล่าเซลล์</option>
                 <option value="อินเวอร์เตอร์" {% if request.args.get('category') == 'อินเวอร์เตอร์' %}selected{% endif %}>อินเวอร์เตอร์</option>
                 <option value="แบตเตอรี่" {% if request.args.get('category') == 'แบตเตอรี่' %}selected{% endif %}>แบตเตอรี่</option>
@@ -23,11 +26,8 @@
                 <option value="อุปกรณ์อื่นๆ" {% if request.args.get('category') == 'อุปกรณ์อื่นๆ' %}selected{% endif %}>อุปกรณ์อื่นๆ</option>
             </select>
 
-            <button class="btn btn-outline-success" type="submit">ค้นหา</button>
+            <button class="btn btn-outline-success" type="submit" style="width: 190px;">ค้นหา</button>
         </form>
-
-        <!-- ปุ่ม Add New Product -->
-        <a href="{{ url_for('add_product_page') }}" class="btn btn-success">เพิ่มสินค้า</a>
     </div>
     
     <!-- ตารางสินค้า -->
@@ -35,11 +35,44 @@
     <table class="table">
         <thead>
             <tr>
-                <th class="text-center">ID</th> <!-- เปลี่ยนเป็น Product Code -->
-                <th class="text-center">ชื่อสินค้า</th>
-                <th class="text-center">จำนวน</th>
-                <th class="text-center">ราคา</th>
-                <th class="text-center">หมวดหมู่สินค้า</th>
+                <th class="text-center">ID</th>
+                <th class="text-center">
+                    <a href="/?sort=name&order={% if sort_by == 'name' and order == 'asc' %}desc{% else %}asc{% endif %}">
+                        สินค้า
+                        {% if sort_by == 'name' %}
+                            {% if order == 'asc' %}
+                                ▲
+                            {% else %}
+                                ▼
+                            {% endif %}
+                        {% endif %}
+                    </a>
+                </th>
+                <th class="text-center">
+                    <a href="/?sort=quantity&order={% if sort_by == 'quantity' and order == 'asc' %}desc{% else %}asc{% endif %}">
+                        จำนวน
+                        {% if sort_by == 'quantity' %}
+                            {% if order == 'asc' %}
+                                ▲
+                            {% else %}
+                                ▼
+                            {% endif %}
+                        {% endif %}
+                    </a>
+                </th>
+                <th class="text-center">
+                    <a href="/?sort=price&order={% if sort_by == 'price' and order == 'asc' %}desc{% else %}asc{% endif %}">
+                        ราคา
+                        {% if sort_by == 'price' %}
+                            {% if order == 'asc' %}
+                                ▲
+                            {% else %}
+                                ▼
+                            {% endif %}
+                        {% endif %}
+                    </a>
+                </th>
+                <!-- <th class="text-center">หมวด</th> -->
                 <th class="text-center">แก้ไข/ลบ</th>
             </tr>
         </thead>
@@ -48,12 +81,18 @@
             <tr>
                 <td class="text-center">{{ product.id}}</td> <!-- เปลี่ยนจาก id เป็น product_code -->
                 <td><a href="/product/{{ product.id }}" class="product-link">{{ product.name }}</a></td>
-                <td>{{ "{:,.0f}".format(product.quantity) }}</td>
-                <td>{{ "{:,.2f}".format(product.price) }}</td>
-                <td class="text-center">{{ product.category }}</td>
-                <td class="text-center">
+                <td class="text-center">{{ "{:,.0f}".format(product.quantity) }}</td>
+                <td class="text-center">{{ "{:,.0f}".format(product.price) }}</td>
+                <!-- <td class="text-center">{{ product.category }}</td> -->
+                <!-- <td class="text-center">
                     <a href="/edit/{{ product.id }}" class="btn btn-primary btn-sm me-2" style="width: 50px;">แก้ไข</a>
                     <a href="/delete/{{ product.id }}" class="btn btn-danger btn-sm" style="width: 50px;" onclick="return confirmDelete();">ลบ</a>
+                </td> -->
+                <td class="text-center">
+                    <div class="action-buttons">
+                        <a href="/edit/{{ product.id }}" class="btn btn-primary btn-sm">แก้ไข</a>
+                        <a href="/delete/{{ product.id }}" class="btn btn-danger btn-sm" onclick="return confirmDelete();">ลบ</a>
+                    </div>
                 </td>
             </tr>
             {% endfor %}

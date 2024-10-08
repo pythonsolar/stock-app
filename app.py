@@ -88,6 +88,10 @@ def index():
     search_name = request.args.get('search', '').strip()
     search_category = request.args.get('category', '')
 
+    # รับค่าการจัดเรียงลำดับ
+    sort_by = request.args.get('sort', 'id')  # ค่าเริ่มต้นให้เรียงตาม ID
+    order = request.args.get('order', 'asc')  # ค่าเริ่มต้นให้เรียงจากน้อยไปมาก (ascending)
+
     # สร้างคำสั่ง SQL แบบ dynamic ตามเงื่อนไขที่มี
     query = "SELECT * FROM products WHERE 1=1"
     params = []
@@ -99,6 +103,10 @@ def index():
     if search_category:  # ถ้ามีการเลือก category
         query += " AND category = ?"
         params.append(search_category)
+
+     # เพิ่มเงื่อนไขการเรียงลำดับ
+    if sort_by in ['name', 'id', 'price', 'quantity']:  # กำหนด field ที่สามารถจัดเรียงได้
+        query += f" ORDER BY {sort_by} {order}"
 
     # Execute the final SQL query with the parameters
     cursor.execute(query, params)
@@ -117,12 +125,11 @@ def index():
             'category': row[4],
             'image': row[5],
             'detail': row[6],
-            'product_code': row[7]
         })
 
     conn.close()
     
-    return render_template('index.html', products=products)
+    return render_template('index.html', products=products, sort_by=sort_by, order=order)
 
 
 # แสดงหน้าเพิ่มสินค้าใหม่
@@ -142,11 +149,11 @@ def add_product():
     today = datetime.today().strftime('%Y%m%d')  # ปี, เดือน, วัน
     random_number = str(random.randint(10, 99))  # สุ่มเลข 2 หลัก
     product_code = f"kc{today}{random_number}"  # รวมกันเป็น kcYYYYMMDDxx
-    
+
     conn = get_db()
     cursor = conn.cursor()
-    cursor.execute('INSERT INTO products (name, quantity, price, category, product_code) VALUES (?, ?, ?, ?, ?)',
-                   (name, quantity, price, category, product_code))
+    cursor.execute('INSERT INTO products (name, quantity, price, category) VALUES (?, ?, ?, ?)',
+                   (name, quantity, price, category))
     conn.commit()
 
     return redirect(url_for('index'))
@@ -190,38 +197,6 @@ def delete_product(id):
     cursor.execute('DELETE FROM products WHERE id = ?', (id,))
     conn.commit()
     return redirect(url_for('index'))
-
-def generate_product_code():
-    # ดึงวันที่ปัจจุบัน
-    current_date = datetime.datetime.now()
-    
-    # แปลงวันที่ปัจจุบันเป็นฟอร์แมต ปี, เดือน, วัน
-    year = current_date.strftime("%Y")  # ปี ค.ศ.
-    month = current_date.strftime("%m")  # เดือน 2 หลัก
-    day = current_date.strftime("%d")    # วัน 2 หลัก
-    
-    # สุ่มตัวเลข 2 หลักท้าย
-    random_number = random.randint(10, 99)  # สุ่มเลข 2 หลัก เช่น 12, 98
-    
-    # รวมเป็นรหัสสินค้า 12 หลัก
-    product_code = f"KC{year}{month}{day}{random_number}"
-    
-    return product_code
-
-def generate_unique_product_code():
-    conn = get_db()
-    cursor = conn.cursor()
-    
-    while True:
-        product_code = generate_product_code()
-        
-        # ตรวจสอบว่ารหัสสินค้าซ้ำหรือไม่
-        cursor.execute("SELECT COUNT(*) FROM products WHERE product_code = ?", (product_code,))
-        result = cursor.fetchone()
-        
-        # ถ้ารหัสไม่ซ้ำ ให้ใช้รหัสนี้
-        if result[0] == 0:
-            return product_code
 
 if __name__ == '__main__':
     app.run(debug=True, port=5001)

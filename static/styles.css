@@ -35,4 +35,18 @@ th, td {
       margin-bottom: 10px;
     }
   }
+
+  @media (max-width: 768px) {
+    /* สำหรับหน้าจอขนาดเล็ก เช่น iPhone */
+    .action-buttons {
+        display: flex;
+        flex-direction: column;
+        align-items: center; /* จัดให้อยู่ตรงกลาง */
+    }
+    .action-buttons a {
+        margin-bottom: 10px; /* เพิ่มช่องว่างระหว่างปุ่ม */
+        width: 50px; /* กำหนดความกว้างของปุ่มให้เท่ากัน */
+    }
+}
+
   

@@ -14,9 +14,9 @@
         <label for="price">ราคา:</label>
         <input type="number" id="price" name="price" class="form-control" step="0.01" value="{{ product.price }}" required>
 
-        <label for="category">หมวดหมู่สินค้า:</label>
+        <label for="category">หมวดสินค้า:</label>
         <select id="category" name="category" class="form-control" required>
-            <option value="ปั๊ม" {% if product.category == 'ปั๊ม' %}selected{% endif %}>ปั๊ม</option>
+            <option value="ปั๊มน้ำ" {% if product.category == 'ปั๊มน้ำ' %}selected{% endif %}>ปั๊มน้ำ</option>
             <option value="แผงโซล่าเซลล์" {% if product.category == 'แผงโซล่าเซลล์' %}selected{% endif %}>แผงโซล่าเซลล์</option>
             <option value="อินเวอร์เตอร์" {% if product.category == 'อินเวอร์เตอร์' %}selected{% endif %}>อินเวอร์เตอร์</option>
             <option value="แบตเตอรี่" {% if product.category == 'แบตเตอรี่' %}selected{% endif %}>แบตเตอรี่</option>
