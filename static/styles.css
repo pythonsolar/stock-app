@@ -49,4 +49,35 @@ th, td {
     }
 }
 
-  
+/* เปลี่ยนสีตัวอักษรเป็นสีดำและเอาขีดเส้นใต้ออกสำหรับลิงก์ในคอลัมน์สินค้า */
+.product-link {
+    color: black; /* เปลี่ยนสีตัวอักษรเป็นสีดำ */
+    text-decoration: none; /* เอาขีดเส้นใต้ออก */
+}
+
+.product-link:hover {
+    color: black; /* ให้สีดำเช่นกันเมื่อมีการ hover */
+    text-decoration: none; /* ปิดการขีดเส้นใต้เมื่อ hover */
+}
+
+/* เปลี่ยนสีตัวอักษรเป็นสีดำและเอาขีดเส้นใต้ออกสำหรับลิงก์ในส่วนหัวของตาราง */
+.table th a {
+    color: black; /* เปลี่ยนสีตัวอักษรเป็นสีดำ */
+    text-decoration: none; /* เอาขีดเส้นใต้ออก */
+}
+
+/* เมื่อนำเมาส์ไปวางบนลิงก์ ให้ยังคงสีดำและไม่มีเส้นใต้ */
+.table th a:hover {
+    color: black;
+    text-decoration: none;
+}
+
+/* ปรับสไตล์ของ navbar-brand */
+.navbar-brand {
+    font-family: 'Poppins', sans-serif; /* เปลี่ยนฟอนต์เป็น Poppins (หรือฟอนต์อื่นๆ ที่ต้องการ) */
+    font-size: 1.5rem; /* ขนาดตัวอักษร */
+    font-weight: bold; /* ความหนาของตัวอักษร */
+    letter-spacing: 1px; /* เพิ่มระยะห่างระหว่างตัวอักษร */
+    color: #fff; /* สีของตัวอักษร */
+    text-transform: uppercase; /* เปลี่ยนเป็นตัวพิมพ์ใหญ่ทั้งหมด */
+}
